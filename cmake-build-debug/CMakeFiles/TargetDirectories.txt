@@ -1,0 +1,3 @@
+/Users/adamsimkin/Documents/GitHub/CPP Projects/AstarPathfinding/cmake-build-debug/CMakeFiles/HelloSFML.dir
+/Users/adamsimkin/Documents/GitHub/CPP Projects/AstarPathfinding/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/adamsimkin/Documents/GitHub/CPP Projects/AstarPathfinding/cmake-build-debug/CMakeFiles/rebuild_cache.dir
