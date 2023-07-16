@@ -183,25 +183,12 @@ private:
     sf::RectangleShape *shape;               // Shape to draw
 };
 
-void resetStart(graphNode *node) {
-    if (node->isStart()) {
-        node->setStart(false);
-        node = nullptr;
-    }
-}
-
-void resetEnd(graphNode *node) {
-    if (node->isEnd()) {
-        node->setEnd(false);
-        node = nullptr;
-    }
-}
 
 graphNode *startNode;                            // Start node
 graphNode *endNode;                              // End node
 int mapWidth = 26;                               // Width of map 26
 int mapHeight = 15;                              // Height of map 15
-std::vector<graphNode *> nodes; // List of nodes
+std::vector<graphNode *> nodes;                  // List of nodes
 std::vector<graphNode *> openList;               // List of nodes to be evaluated
 
 
@@ -332,16 +319,29 @@ void resetNodes() {
     /*
      * Reset the nodes to their default values
      */
-    for (graphNode *node : nodes) {
-        node->setVisited(false);
-        node->setPath(false);
-        node->setParent(nullptr);
-        node->setGCost(1);
-        node->setHCost(1);
-        node->setFCost(1);
-        node->setNeighbors(std::vector<graphNode *>());
-        node->setShape(new sf::RectangleShape(sf::Vector2f(45, 45)));
+    nodes.clear();
+    for (int i = 0; i < mapWidth; i++) {
+        for (int j = 0; j < mapHeight; j++) {
+            auto *node = new graphNode();
+            node->setX(i);
+            node->setY(j);
+            node->setVisited(false);
+            node->setObstacle(false);
+            node->setGCost(1);
+            node->setHCost(1);
+            node->setFCost(1);
+            node->setPath(false);
+            node->setStart(false);
+            node->setEnd(false);
+            node->setParent(nullptr);
+            node->resetToggled();
+            node->setNeighbors(std::vector<graphNode *>());
+            node->setShape(new sf::RectangleShape(sf::Vector2f(45, 45)));
+            nodes.push_back(node);
+        }
     }
+    startNode = nullptr;
+    endNode = nullptr;
 }
 
 int main() {
@@ -366,7 +366,7 @@ int main() {
             nodes.push_back(node);
         }
     }
-
+    int counter = 0;
 
     while (window.isOpen()) {
         sf::Event event{};
@@ -380,13 +380,20 @@ int main() {
                     window.close();
                 }
                 if (event.key.code == sf::Keyboard::Space) {
-                    AstarAlgorithm();
-                    // draw path
-                    for (auto &node: nodes) {
-                        if (node->isPath()) {
-                            node->getShape()->setFillColor(sf::Color::Blue);
+                    if (counter % 2 == 0){
+                        AstarAlgorithm();
+                        // draw path
+                        for (auto &node: nodes) {
+                            if (node->isPath()) {
+                                node->getShape()->setFillColor(sf::Color::Blue);
+                            }
                         }
+                        counter++;
+                    } else {
+                        resetNodes();
+                        counter++;
                     }
+
                 }
             }
             if (event.type == sf::Event::MouseButtonPressed) {
